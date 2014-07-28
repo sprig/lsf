@@ -14,9 +14,8 @@ int listdir(const char*, const char*);
 
 int
 main(int argc, char *argv[]) {
-  size_t size = 10000;
-  //  char* dirname = NULL;
-  char dirname[10000];
+  char* dirname;
+
 
   if(argc == 1)
     exit(EXIT_FAILURE);
@@ -26,8 +25,10 @@ main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS);
   }
 
-  if (getcwd(dirname,size) != NULL)
+  if ((dirname = getcwd(NULL,0)) != NULL) {
     listdir(dirname, argv[1]);
+    free(dirname);
+  }
   return 0;
 };
 
@@ -43,12 +44,11 @@ int listdir(const char* dirname, const char* filename) {
       if ((dp = readdir(dir))
           && (stat(dp->d_name, &s) != -1))
         if (S_ISREG (s.st_mode)
-            && (strcasestr(dp->d_name, filename) != NULL))
-          {
-	    path = realpath(dp->d_name, NULL);
-            puts(path);
-	    free(path);
-          }
+            && (strcasestr(dp->d_name, filename) != NULL)) {
+          path = realpath(dp->d_name, NULL);
+          puts(path);
+          free(path);
+        }
         else if (S_ISDIR (s.st_mode)
                  && strcmp(dp->d_name, ".")
                  && strcmp(dp->d_name, ".."))
