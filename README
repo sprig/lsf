@@ -1,0 +1,3 @@
+lsf - list files
+======================
+`lsf filename` is equivalent to `find -iname filename`, but a little bit faster
